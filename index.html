@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOK HIGH MUSIC - Justin</title>
+  <link rel="icon" href="img/logo.jpeg" type="image/x-icon">
+
+
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="hero">
+    <canvas id="particles"></canvas>
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <img src="img/logo.jpeg" alt="LOOK HIGH MUSIC Logo" style="width: 120px; margin-bottom: 15px;">
+      <h1>Justin</h1>
+      <p>Escucha el nuevo sencillo ahora</p>
+    </div>
+  </header>
+
+  <section class="music-section">
+    <h2>Mis Canciones</h2>
+    <div class="track">
+      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 1">
+      <h3>TU</h3>
+      <audio controls>
+        <source src="audio/WhatsApp Audio 2025-06-22 at 2.30.56 PM.mpeg" type="audio/mpeg">
+        Tu navegador no soporta la reproducción de audio.
+      </audio>
+    </div>
+    <div class="track">
+      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 2">
+      <h3>LIE</h3>
+      <audio controls>
+        <source src="audio/lie.mpeg" type="audio/mpeg">
+        Tu navegador no soporta la reproducción de audio.
+      </audio>
+    </div>
+    <div class="track">
+      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 3">
+      <h3>LIKEA</h3>
+      <audio controls>
+        <source src="audio/LIKEA MASTER V3.wav" type="audio/mpeg">
+        Tu navegador no soporta la reproducción de audio.
+      </audio>
+    </div>
+  </section>
+
+  <section class="bio-section">
+    <h2>Sobre Justin</h2>
+    <p>Justin es una nueva promesa de la música urbana, con un estilo fresco, letras auténticas y una energía que conecta con su generación. Representando a LOOK HIGH MUSIC, Justin busca dejar huella en la escena con cada beat.</p>
+  </section>
+
+  <section class="contact-section">
+  <h2>Booking / Contacto</h2>
+  <form action="https://formspree.io/f/mvgrwgyl" method="POST" class="contact-form">
+    <input type="text" name="nombre" placeholder="Tu nombre" required />
+    <input type="email" name="correo" placeholder="Tu correo" required />
+    <textarea name="message" rows="4" placeholder="Mensaje o solicitud"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+
+  <section class="social-section">
+    <h2>Sígueme</h2>
+    <div class="social-links">
+      <a href="https://www.instagram.com/ijustinp?igsh=MXh6ejJsZXc5Nm5jbA==" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@justin_acevedx?_t=ZS-8xQRMI4Dh7U&_r=1" target="_blank">TikTok</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 LOOK HIGH MUSIC. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particlesArray = [];
+    const numParticles = 100;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+        }
+      }
+      draw() {
+        ctx.fillStyle = '#00f2ff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      for (let i = 0; i < numParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+  </script>
+
+</body>
+</html>
