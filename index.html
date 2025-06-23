@@ -170,106 +170,121 @@
 
 
   <script>
-    const audio = document.getElementById('audio');
-    const trackTitle = document.getElementById('track-title');
-    const playBtn = document.getElementById('play-btn');
-    const volumeControl = document.getElementById('volume-control');
-    const canvas = document.getElementById('visualizer');
-    const ctx = canvas.getContext('2d');
-    const trackImage = document.getElementById('track-image');
+  const audio = document.getElementById('audio');
+  const trackTitle = document.getElementById('track-title');
+  const playBtn = document.getElementById('play-btn');
+  const volumeControl = document.getElementById('volume-control');
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  const trackImage = document.getElementById('track-image');
 
-    const tracks = [
-      { title: "LIKEA", src: "audio/LIKEA MASTER V3.wav" },
-      { title: "LIE", src: "audio/lie.mpeg" },
-      { title: "TU", src: "audio/WhatsApp Audio 2025-06-22 at 2.30.56 PM.mpeg" }
-    ];
+  const tracks = [
+    { title: "LIKEA", src: "audio/LIKEA MASTER V3.wav" },
+    { title: "LIE", src: "audio/lie.mpeg" },
+    { title: "TU", src: "audio/WhatsApp Audio 2025-06-22 at 2.30.56 PM.mpeg" }
+  ];
 
-    let currentTrack = 0;
+  let currentTrack = 0;
+  let audioContext, source, analyser, gainNode;
+  let initialized = false;
 
-    function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+  function resizeCanvas() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = 100;
+  }
 
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaElementSource(audio);
-    const analyser = audioContext.createAnalyser();
-    const gainNode = audioContext.createGain();
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function initAudioContext() {
+    if (initialized) return;
+
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    source = audioContext.createMediaElementSource(audio);
+    analyser = audioContext.createAnalyser();
+    gainNode = audioContext.createGain();
+
     source.connect(analyser);
     analyser.connect(gainNode);
     gainNode.connect(audioContext.destination);
+
     analyser.fftSize = 64;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+    initialized = true;
 
     volumeControl.addEventListener('input', () => {
       gainNode.gain.value = volumeControl.value;
     });
 
-    function loadTrack(index) {
-      currentTrack = index;
-      audio.src = tracks[index].src;
-      trackTitle.textContent = tracks[index].title;
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      analyser.getByteFrequencyData(dataArray);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let x = 0;
-      const barWidth = (canvas.width / bufferLength) * 1.5;
-      let total = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = dataArray[i];
-        total += barHeight;
-        ctx.fillStyle = "#00ffea";
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
-        x += barWidth;
-      }
-
-      const avg = total / bufferLength;
-      const scale = 1 + avg / 300;
-      trackImage.style.transform = `scale(${scale})`;
-    }
     animate();
+  }
 
-    function togglePlay() {
-      if (audio.paused) {
-        audioContext.resume();
-        audio.play();
-        playBtn.classList.remove('fa-play');
-        playBtn.classList.add('fa-pause');
-      } else {
-        audio.pause();
-        playBtn.classList.remove('fa-pause');
-        playBtn.classList.add('fa-play');
-      }
+  const dataArray = new Uint8Array(32);
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!analyser) return;
+    analyser.getByteFrequencyData(dataArray);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let x = 0;
+    const barWidth = (canvas.width / dataArray.length) * 1.5;
+    let total = 0;
+
+    for (let i = 0; i < dataArray.length; i++) {
+      const barHeight = dataArray[i];
+      total += barHeight;
+      ctx.fillStyle = "#00ffea";
+      ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+      x += barWidth;
     }
 
-    function nextTrack() {
-      currentTrack = (currentTrack + 1) % tracks.length;
-      loadTrack(currentTrack);
+    const avg = total / dataArray.length;
+    const scale = 1 + avg / 300;
+    trackImage.style.transform = `scale(${scale})`;
+  }
+
+  function loadTrack(index) {
+    currentTrack = index;
+    audio.src = tracks[index].src;
+    trackTitle.textContent = tracks[index].title;
+  }
+
+  function togglePlay() {
+    initAudioContext();
+    if (audio.paused) {
+      audioContext.resume();
       audio.play();
       playBtn.classList.remove('fa-play');
       playBtn.classList.add('fa-pause');
+    } else {
+      audio.pause();
+      playBtn.classList.remove('fa-pause');
+      playBtn.classList.add('fa-play');
     }
+  }
 
-    function prevTrack() {
-      currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
-      loadTrack(currentTrack);
-      audio.play();
-      playBtn.classList.remove('fa-play');
-      playBtn.classList.add('fa-pause');
-    }
-
-    audio.addEventListener('ended', nextTrack);
+  function nextTrack() {
+    currentTrack = (currentTrack + 1) % tracks.length;
     loadTrack(currentTrack);
-    window.addEventListener("load", () => {
-      document.getElementById("loader").classList.add("hidden");
-    });
-  </script>
+    audio.play();
+    playBtn.classList.remove('fa-play');
+    playBtn.classList.add('fa-pause');
+  }
+
+  function prevTrack() {
+    currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+    loadTrack(currentTrack);
+    audio.play();
+    playBtn.classList.remove('fa-play');
+    playBtn.classList.add('fa-pause');
+  }
+
+  audio.addEventListener('ended', nextTrack);
+  loadTrack(currentTrack);
+
+  window.addEventListener("load", () => {
+    document.getElementById("loader").classList.add("hidden");
+  });
+</script>
+
 </body>
 </html>
