@@ -8,6 +8,37 @@
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    /* Loader */
+    #loader {
+      position: fixed;
+      z-index: 9999;
+      background: #000;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    #loader img {
+      width: 120px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
     .sound-bars {
       display: flex;
       justify-content: center;
@@ -37,6 +68,9 @@
   </style>
 </head>
 <body>
+  <div id="loader">
+    <img src="img/logo.jpeg" alt="Loader Logo">
+  </div>
 
   <header class="hero">
     <canvas id="particles"></canvas>
@@ -50,7 +84,7 @@
 
   <section class="music-section">
     <h2>Mis Canciones</h2>
-
+    <!-- TRACK 1 -->
     <div class="track">
       <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 1">
       <h3>TU</h3>
@@ -63,6 +97,7 @@
       </audio>
     </div>
 
+    <!-- TRACK 2 -->
     <div class="track">
       <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 2">
       <h3>LIE</h3>
@@ -75,6 +110,7 @@
       </audio>
     </div>
 
+    <!-- TRACK 3 -->
     <div class="track">
       <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 3">
       <h3>LIKEA</h3>
@@ -112,10 +148,17 @@
   </section>
 
   <footer>
-    <p>&copy; 2025 LOOK HIGH MUSIC. Todos los derechos reservados.</p>
-  </footer>
+  <p>&copy; 2025 LOOK HIGH MUSIC. Todos los derechos reservados.</p>
+  <p>Desarrollado por <strong>Andres</strong> | <a href="https://wa.me/573165869139" target="_blank" style="color: #00ffea;">Contáctame por WhatsApp</a></p>
+</footer>
+
 
   <script>
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("loader");
+      loader.classList.add("hidden");
+    });
+
     // Partículas animadas
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
@@ -173,7 +216,6 @@
       const bars = track.querySelector('.sound-bars');
 
       audio.addEventListener('play', () => {
-        // Oculta los demás
         document.querySelectorAll('.sound-bars').forEach(b => b.style.display = 'none');
         bars.style.display = 'flex';
       });
@@ -187,6 +229,5 @@
       });
     });
   </script>
-
 </body>
 </html>
