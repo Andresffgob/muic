@@ -6,9 +6,9 @@
   <title>LOOK HIGH MUSIC - Justin</title>
   <link rel="icon" href="img/logo.jpeg" type="image/x-icon" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    /* Loader */
     #loader {
       position: fixed;
       z-index: 9999;
@@ -22,48 +22,69 @@
       align-items: center;
       transition: opacity 0.8s ease, visibility 0.8s;
     }
-
     #loader img {
       width: 120px;
       animation: pulse 1.5s infinite ease-in-out;
     }
-
     #loader.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
     }
-
-    .sound-bars {
+    .music-section { text-align: center; }
+    .player-container {
+      background: linear-gradient(45deg, #0f0f0f, #1a1a1a);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      color: #fff;
+      position: relative;
+    }
+    .track-visual { position: relative; width: 100%; border-radius: 15px; overflow: hidden; }
+    .track-image {
+      width: 100%;
+      border-radius: 10px;
+      transition: transform 0.2s ease;
+      z-index: 1;
+      position: relative;
+    }
+    #visualizer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .player-controls {
       display: flex;
       justify-content: center;
-      gap: 4px;
-      margin-top: 10px;
-      height: 20px;
+      align-items: center;
+      gap: 20px;
+      margin-top: 15px;
     }
-
-    .sound-bars span {
-      width: 4px;
-      height: 100%;
-      background: #00ffea;
-      animation: bounce 1s infinite ease-in-out;
-      border-radius: 2px;
+    .player-controls i {
+      font-size: 24px;
+      cursor: pointer;
+      color: #00f2ff;
+      transition: transform 0.2s;
     }
-
-    .sound-bars span:nth-child(1) { animation-delay: 0s; }
-    .sound-bars span:nth-child(2) { animation-delay: 0.1s; }
-    .sound-bars span:nth-child(3) { animation-delay: 0.2s; }
-    .sound-bars span:nth-child(4) { animation-delay: 0.3s; }
-    .sound-bars span:nth-child(5) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 100% { transform: scaleY(0.3); }
-      50% { transform: scaleY(1); }
+    .player-controls i:hover { transform: scale(1.2); }
+    .volume-wrapper {
+      text-align: center;
+      margin-top: 15px;
+    }
+    #volume-control {
+      width: 60%;
+      max-width: 300px;
+      accent-color: #00ffea;
     }
   </style>
 </head>
@@ -72,55 +93,34 @@
     <img src="img/logo.jpeg" alt="Loader Logo">
   </div>
 
-  <header class="hero">
+  <header class="hero" id="hero">
+    <div class="hero-bg"></div>
     <canvas id="particles"></canvas>
     <div class="overlay"></div>
     <div class="hero-content">
-      <img src="img/logo.jpeg" alt="LOOK HIGH MUSIC Logo" style="width: 120px; margin-bottom: 15px;" />
+      <img src="img/logo.jpeg" alt="LOOK HIGH MUSIC Logo" class="hero-logo" />
       <h1>Justin</h1>
       <p>Escucha el nuevo sencillo ahora</p>
     </div>
   </header>
 
-  <section class="music-section">
+  <section class="music-section" id="player">
     <h2>Mis Canciones</h2>
-    <!-- TRACK 1 -->
-    <div class="track">
-      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 1">
-      <h3>LIE</h3>
-      <div class="sound-bars" style="display: none;">
-        <span></span><span></span><span></span><span></span><span></span>
+    <div class="player-container">
+      <div class="track-visual">
+        <canvas id="visualizer"></canvas>
+        <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Portada" class="track-image" id="track-image">
       </div>
-      <audio controls>
-        <source src="audio/WhatsApp Audio 2025-06-22 at 2.30.56 PM.mpeg" type="audio/mpeg">
-        Tu navegador no soporta la reproducción de audio.
-      </audio>
-    </div>
-
-    <!-- TRACK 2 -->
-    <div class="track">
-      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 2">
-      <h3>TU</h3>
-      <div class="sound-bars" style="display: none;">
-        <span></span><span></span><span></span><span></span><span></span>
+      <h3 id="track-title">LIKEA</h3>
+      <audio id="audio" src="audio/LIKEA MASTER V3.wav" crossorigin="anonymous"></audio>
+      <div class="player-controls">
+        <i class="fas fa-backward" onclick="prevTrack()"></i>
+        <i class="fas fa-play" id="play-btn" onclick="togglePlay()"></i>
+        <i class="fas fa-forward" onclick="nextTrack()"></i>
       </div>
-      <audio controls>
-        <source src="audio/lie.mpeg" type="audio/mpeg">
-        Tu navegador no soporta la reproducción de audio.
-      </audio>
-    </div>
-
-    <!-- TRACK 3 -->
-    <div class="track">
-      <img src="img/WhatsApp Image 2025-06-22 at 2.23.13 PM.jpeg" alt="Canción 3">
-      <h3>LIKEA</h3>
-      <div class="sound-bars" style="display: none;">
-        <span></span><span></span><span></span><span></span><span></span>
+      <div class="volume-wrapper">
+        <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1" title="Volumen">
       </div>
-      <audio controls>
-        <source src="audio/LIKEA MASTER V3.wav" type="audio/mpeg">
-        Tu navegador no soporta la reproducción de audio.
-      </audio>
     </div>
   </section>
 
@@ -129,104 +129,146 @@
     <p>Justin es una nueva promesa de la música urbana, con un estilo fresco, letras auténticas y una energía que conecta con su generación. Representando a LOOK HIGH MUSIC, Justin busca dejar huella en la escena con cada beat.</p>
   </section>
 
-  <section class="contact-section">
-    <h2>Booking / Contacto</h2>
+ <section class="contact-section">
+  <h2>Booking / Contacto</h2>
+  <div class="booking-container">
     <form action="https://formspree.io/f/mvgrwgyl" method="POST" class="contact-form">
-      <input type="text" name="nombre" placeholder="Tu nombre" required />
-      <input type="email" name="correo" placeholder="Tu correo" required />
-      <textarea name="message" rows="4" placeholder="Mensaje o solicitud"></textarea>
-      <button type="submit">Enviar</button>
+      <div class="form-group">
+        <input type="text" name="nombre" placeholder="Tu nombre" required />
+      </div>
+      <div class="form-group">
+        <input type="email" name="correo" placeholder="Tu correo" required />
+      </div>
+      <div class="form-group">
+        <textarea name="message" rows="4" placeholder="Mensaje o solicitud" required></textarea>
+      </div>
+      <button type="submit">Enviar Mensaje</button>
     </form>
-  </section>
+  </div>
+</section>
 
-  <section class="social-section">
-    <h2>Sígueme</h2>
-    <div class="social-links">
-      <a href="https://www.instagram.com/ijustinp?igsh=MXh6ejJsZXc5Nm5jbA==" target="_blank">Instagram</a>
-      <a href="https://www.tiktok.com/@justin_acevedx?_t=ZS-8xQRMI4Dh7U&_r=1" target="_blank">TikTok</a>
-    </div>
-  </section>
 
-  <footer>
-  <p>&copy; 2025 LOOK HIGH MUSIC. Todos los derechos reservados.</p>
-  <p>Desarrollado por <strong>Andres</strong> | <a href="https://wa.me/573165869139" target="_blank" style="color: #00ffea;">Contáctame por WhatsApp</a></p>
+<section class="social-section">
+  <h2>Sígueme en redes</h2>
+  <div class="social-links">
+    <a href="https://www.instagram.com/ijustinp" target="_blank" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.tiktok.com/@justin_acevedx" target="_blank" class="social-icon tiktok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://open.spotify.com/" target="_blank" class="social-icon spotify"><i class="fab fa-spotify"></i></a>
+    <a href="https://www.youtube.com/" target="_blank" class="social-icon youtube"><i class="fab fa-youtube"></i></a>
+  </div>
+</section>
+
+
+ <footer class="footer">
+  <div class="footer-content">
+    <p>&copy; 2025 <strong>LOOK HIGH MUSIC</strong>. Todos los derechos reservados.</p>
+    <p>Desarrollado por <strong>Andres</strong> |
+      <a href="https://wa.me/573165869139" target="_blank">Contáctame por WhatsApp</a>
+    </p>
+  </div>
 </footer>
 
 
   <script>
-    window.addEventListener("load", () => {
-      const loader = document.getElementById("loader");
-      loader.classList.add("hidden");
+    const audio = document.getElementById('audio');
+    const trackTitle = document.getElementById('track-title');
+    const playBtn = document.getElementById('play-btn');
+    const volumeControl = document.getElementById('volume-control');
+    const canvas = document.getElementById('visualizer');
+    const ctx = canvas.getContext('2d');
+    const trackImage = document.getElementById('track-image');
+
+    const tracks = [
+      { title: "LIKEA", src: "audio/LIKEA MASTER V3.wav" },
+      { title: "LIE", src: "audio/lie.mpeg" },
+      { title: "TU", src: "audio/WhatsApp Audio 2025-06-22 at 2.30.56 PM.mpeg" }
+    ];
+
+    let currentTrack = 0;
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaElementSource(audio);
+    const analyser = audioContext.createAnalyser();
+    const gainNode = audioContext.createGain();
+    source.connect(analyser);
+    analyser.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    analyser.fftSize = 64;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    volumeControl.addEventListener('input', () => {
+      gainNode.gain.value = volumeControl.value;
     });
 
-    // Partículas animadas
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particlesArray = [];
-    const numParticles = 100;
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.speedY = Math.random() * 1 - 0.5;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-        }
-      }
-      draw() {
-        ctx.fillStyle = '#00f2ff';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    function loadTrack(index) {
+      currentTrack = index;
+      audio.src = tracks[index].src;
+      trackTitle.textContent = tracks[index].title;
     }
 
-    function initParticles() {
-      for (let i = 0; i < numParticles; i++) {
-        particlesArray.push(new Particle());
-      }
-    }
-
-    function animateParticles() {
+    function animate() {
+      requestAnimationFrame(animate);
+      analyser.getByteFrequencyData(dataArray);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
-        particlesArray[i].draw();
+      let x = 0;
+      const barWidth = (canvas.width / bufferLength) * 1.5;
+      let total = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = dataArray[i];
+        total += barHeight;
+        ctx.fillStyle = "#00ffea";
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+        x += barWidth;
       }
-      requestAnimationFrame(animateParticles);
+
+      const avg = total / bufferLength;
+      const scale = 1 + avg / 300;
+      trackImage.style.transform = `scale(${scale})`;
+    }
+    animate();
+
+    function togglePlay() {
+      if (audio.paused) {
+        audioContext.resume();
+        audio.play();
+        playBtn.classList.remove('fa-play');
+        playBtn.classList.add('fa-pause');
+      } else {
+        audio.pause();
+        playBtn.classList.remove('fa-pause');
+        playBtn.classList.add('fa-play');
+      }
     }
 
-    initParticles();
-    animateParticles();
+    function nextTrack() {
+      currentTrack = (currentTrack + 1) % tracks.length;
+      loadTrack(currentTrack);
+      audio.play();
+      playBtn.classList.remove('fa-play');
+      playBtn.classList.add('fa-pause');
+    }
 
-    // Animación de sonido
-    document.querySelectorAll('.track').forEach(track => {
-      const audio = track.querySelector('audio');
-      const bars = track.querySelector('.sound-bars');
+    function prevTrack() {
+      currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+      loadTrack(currentTrack);
+      audio.play();
+      playBtn.classList.remove('fa-play');
+      playBtn.classList.add('fa-pause');
+    }
 
-      audio.addEventListener('play', () => {
-        document.querySelectorAll('.sound-bars').forEach(b => b.style.display = 'none');
-        bars.style.display = 'flex';
-      });
-
-      audio.addEventListener('pause', () => {
-        bars.style.display = 'none';
-      });
-
-      audio.addEventListener('ended', () => {
-        bars.style.display = 'none';
-      });
+    audio.addEventListener('ended', nextTrack);
+    loadTrack(currentTrack);
+    window.addEventListener("load", () => {
+      document.getElementById("loader").classList.add("hidden");
     });
   </script>
 </body>
